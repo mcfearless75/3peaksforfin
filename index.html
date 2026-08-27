@@ -384,7 +384,7 @@
 </header>
 
 <section class="hero" id="top">
-  <video class="hero-video" autoplay muted loop playsinline preload="auto" poster="logo1.jpeg">
+  <video id="heroVideo" class="hero-video" autoplay muted loop playsinline webkit-playsinline="true" preload="auto" poster="logo1.jpeg">
     <source src="https://d8j0ntlcm91z4.cloudfront.net/user_3C2ytGcI5HzavlEPcX3jTX2eGyP/hf_20260827_051526_5b4e1daf-801e-4153-933d-512e55dd6503.mp4" type="video/mp4">
   </video>
   <div class="hero-overlay"></div>
@@ -547,6 +547,27 @@
     revealEls.forEach(function (el) { observer.observe(el); });
   } else {
     revealEls.forEach(function (el) { el.classList.add('is-visible'); });
+  }
+
+  // Force-start the hero video: some mobile browsers (data saver, battery
+  // saver, certain Android WebViews) ignore the autoplay attribute even
+  // when muted, leaving just the poster frame showing. Set muted via the
+  // JS property (not just the attribute) and retry play() aggressively,
+  // including on the first user interaction as a last resort.
+  var heroVideo = document.getElementById('heroVideo');
+  if (heroVideo) {
+    heroVideo.muted = true;
+    heroVideo.defaultMuted = true;
+    var tryPlay = function () {
+      var p = heroVideo.play();
+      if (p && typeof p.catch === 'function') p.catch(function () {});
+    };
+    tryPlay();
+    heroVideo.addEventListener('loadedmetadata', tryPlay);
+    heroVideo.addEventListener('canplay', tryPlay);
+    ['touchstart', 'click', 'scroll'].forEach(function (evt) {
+      document.addEventListener(evt, tryPlay, { once: true, passive: true });
+    });
   }
 </script>
 
