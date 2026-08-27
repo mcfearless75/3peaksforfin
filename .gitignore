@@ -2,12 +2,13 @@ hero-video.mp4
 .vercel
 .claude/
 
-.vercel
-
-# Ruflo local secrets and runtime data
+# Ruflo / claude-flow local tooling — not part of the website
+.agents/
+.claude-flow/
+.swarm/
+.mcp.json
+ruvector.db
+CLAUDE.md
 .env
 .env.local
 .env.*.local
-.claude-flow/data/
-.claude-flow/logs/
-.claude-flow/sessions/
